@@ -40,16 +40,18 @@ const { page } = Astro.props;
       <ul class="my-3">
         {page.data.map((post) => (
           <li key={post.id}>
-            <Card
-              url={'/blog/' + post.title.replaceAll(' ', '-').toLowerCase()}
-              title={post.title}
-              footer={'Date: ' + post.date}
-            >
-              {post.image_url && (
-                <img src={post.image_url} alt={`Image for ${post.title}`} class="card-image" />
-              )}
-              <p>{post.description}</p>
-            </Card>
+<Card
+  url={'/blog/' + post.title.replaceAll(' ', '-').toLowerCase()}
+  title={post.title}
+  footer={'Date: ' + post.date}
+>
+  {post.image_url ? (
+    <img src={post.image_url} alt={`Image for ${post.title}`} class="card-image" />
+  ) : (
+    <p class="no-image-placeholder">No image available</p> <!-- Optional: for styling -->
+  )}
+  <p>{post.description}</p>
+</Card>
           </li>
         ))}
       </ul>

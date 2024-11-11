@@ -33,7 +33,7 @@ const { rows: [post] } = await turso.execute(
   `SELECT title, description, date, blog, image_url FROM blog WHERE id = ?`,
   [id]
 );
----
+--- 
 
 <DefaultLayout title={post.title} description={post.description} url={post.title}>
   <div class="container">

@@ -6,12 +6,12 @@ import { createClient } from '@libsql/client';
 export async function getStaticPaths({ paginate }) {
   // Initialize Turso client inside the function
   const turso = createClient({
-    url: import.meta.env.TURSO_DATABASE_URL, // Use import.meta.env for environment variables
+    url: import.meta.env.TURSO_DATABASE_URL,
     authToken: import.meta.env.TURSO_AUTH_TOKEN,
   });
 
   // Execute SQL query to fetch blog posts from the "blog" table
-  const { rows } = await turso.execute('SELECT id, title, description, date, blog FROM blog');
+  const { rows } = await turso.execute('SELECT id, title, description, date, blog, image_url FROM blog');
 
   // Paginate the results
   return paginate(rows, { pageSize: 6 });
@@ -45,7 +45,10 @@ const { page } = Astro.props;
               title={post.title}
               footer={'Date: ' + post.date}
             >
-              {post.description}
+              {post.image_url && (
+                <img src={post.image_url} alt={`Image for ${post.title}`} class="card-image" />
+              )}
+              <p>{post.description}</p>
             </Card>
           </li>
         ))}
@@ -65,6 +68,12 @@ const { page } = Astro.props;
 </DefaultLayout>
 
 <style lang="scss">
+  .card-image {
+    width: 100%;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
   ul {
     display: grid;
     grid-template-columns: 1fr;

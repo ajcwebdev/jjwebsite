@@ -24,17 +24,49 @@ export async function getStaticPaths() {
 
 const { id } = Astro.props;
 
-// Fetch the full post data using the post ID
+// Fetch the full post data including image_url using the post ID
 const turso = createClient({
   url: import.meta.env.TURSO_DATABASE_URL,
   authToken: import.meta.env.TURSO_AUTH_TOKEN,
 });
-const { rows: [post] } = await turso.execute(`SELECT title, description, date, blog FROM blog WHERE id = ?`, [id]);
+const { rows: [post] } = await turso.execute(
+  `SELECT title, description, date, blog, image_url FROM blog WHERE id = ?`,
+  [id]
+);
 ---
 
 <DefaultLayout title={post.title} description={post.description} url={post.title}>
   <div class="container">
-  
+    <div class="mt-12">
+      <Breadcrumbs>
+        <BreadcrumbsItem href="/" label="Home" />
+        <BreadcrumbsItem href="/blog" label="Blog" />
+        <BreadcrumbsItem currentPage={true} label={post.title} />
+      </Breadcrumbs>
+    </div>
+    <!-- Hero Image Section -->
+    {post.image_url && (
+      <img src={post.image_url} alt={`Image for ${post.title}`} class="hero-image" />
+    )}
+  </div>
+  <section class="my-12">
+    <div class="container">
+      <h1>{post.title}</h1>
+      <p><strong>Date:</strong> {post.date}</p>
+    </div>
+  </section>
+  <section class="my-12">
+    <div class="container">
+      <p class="text-2xl">{post.blog}</p>
+    </div>
+  </section>
+</DefaultLayout>
 
-    <h1>{post.title}</h1>
-    <p>{post.blog}</p>
+<style lang="scss">
+  .hero-image {
+    width: 100%;
+    height: auto;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+  }
+</style>

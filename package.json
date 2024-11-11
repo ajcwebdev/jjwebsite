@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@iconify-json/dashicons": "^1.2.0",
-    "@iconify-json/icon-park-solid": "^1.2.1"
+    "@iconify-json/icon-park-solid": "^1.2.1",
+    "sharp": "^0.33.5"
   }
 }

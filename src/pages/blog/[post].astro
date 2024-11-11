@@ -1,57 +1,40 @@
 ---
-import DefaultLayout from '../../layouts/DefaultLayout.astro'
-import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components'
+import DefaultLayout from '../../layouts/DefaultLayout.astro';
+import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components';
+import { createClient } from '@libsql/client';
 
 export async function getStaticPaths() {
-  const data = await fetch('https://jsonplaceholder.typicode.com/posts').then((response) => response.json())
+  // Initialize Turso client
+  const turso = createClient({
+    url: import.meta.env.TURSO_DATABASE_URL,
+    authToken: import.meta.env.TURSO_AUTH_TOKEN,
+  });
 
-  return data.map((post) => {
+  // Fetch all post IDs and titles to create paths for individual posts
+  const { rows } = await turso.execute('SELECT id, title FROM blog');
+
+  // Generate paths based on title, using it as a URL slug
+  return rows.map((post) => {
     return {
       params: { post: post.title.replaceAll(' ', '-').toLowerCase() },
-      props: { post },
-    }
-  })
+      props: { id: post.id },
+    };
+  });
 }
 
-const { post } = Astro.props
+const { id } = Astro.props;
+
+// Fetch the full post data using the post ID
+const turso = createClient({
+  url: import.meta.env.TURSO_DATABASE_URL,
+  authToken: import.meta.env.TURSO_AUTH_TOKEN,
+});
+const { rows: [post] } = await turso.execute(`SELECT title, description, date, blog FROM blog WHERE id = ?`, [id]);
 ---
 
-<DefaultLayout title={post.title} description={post.body} url={post.title}>
+<DefaultLayout title={post.title} description={post.description} url={post.title}>
   <div class="container">
-    <div class="mt-12">
-      <Breadcrumbs>
-        <BreadcrumbsItem href="/" label="Home" />
-        <BreadcrumbsItem href="/blog" label="Blog" />
-        <BreadcrumbsItem currentPage={true} label={post.title} />
-      </Breadcrumbs>
-    </div>
-  </div>
-  <section class="my-12">
-    <div class="container">
-      <h1>{post.title}</h1><br />
-      <p>By userId: {post.userId}</p>
-    </div>
-  </section>
-  <section class="my-12">
-    <div class="container">
-      <p class="text-2xl">{post.body}</p>
-    </div>
-  </section>
-</DefaultLayout>
+  
 
-<style lang="scss">
-  ul {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 4rem;
-
-    @media (min-width: 550px) {
-      grid-template-columns: repeat(2, 1fr);
-      grid-gap: 2rem;
-    }
-
-    @media (min-width: 950px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-</style>
+    <h1>{post.title}</h1>
+    <p>{post.blog}</p>

@@ -19,7 +19,7 @@
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
     "accessible-astro-components": "^2.3.5",
-    "astro": "^4.16.6",
+    "astro": "^4.16.10",
     "astro-compress": "^2.0.6",
     "astro-icon": "^1.0.2",
     "eslint": "^8.33.0",
@@ -35,6 +35,8 @@
   "dependencies": {
     "@iconify-json/dashicons": "^1.2.0",
     "@iconify-json/icon-park-solid": "^1.2.1",
-    "sharp": "^0.33.5"
+    "@libsql/client": "^0.14.0",
+    "sharp": "^0.33.5",
+    "turso": "^0.1.0"
   }
 }

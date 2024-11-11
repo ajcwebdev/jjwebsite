@@ -13,33 +13,7 @@ const props = Astro.props
         <h1 class="text-center text-6xl md:text-left lg:text-8xl">
           <slot><span class="text-gradient">Jenn Junod</span> Developer Advocate</slot>
         </h1>
-        <div class="flex flex-col gap-3 min-[200px]:flex-row">
-          <a
-            class="button has-icon color-secondary whitespace-nowrap"
-            href="/resume/"
-          >
-            <Icon name="mdi:resume" />
-            Resume
-          </a>
-          <a
-          class="button has-icon color-secondary whitespace-nowrap"
-          href="/blog/"
-        >
-        <Icon name="dashicons:welcome-write-blog" />
-          Blog
-        </a>
-          <a class="button has-icon color-secondary whitespace-nowrap" href="https://teachjenntech.com">
-            <Icon name="icon-park-solid:collect-computer" />
-            Teach Jenn Tech
-          </a>
-          <a class="button has-icon color-secondary whitespace-nowrap" href="https://shit2talkabout.com">
-            <Icon name="ion:mic" />
-            Shit2TalkAbout
-          </a>
-          
-          
-          
-        </div>
+        
       </div>
       <img class="hidden lg:block" src={src} alt="" decoding="async" />
     </div>

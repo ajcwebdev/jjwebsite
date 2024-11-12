@@ -2,38 +2,75 @@
 import DefaultLayout from '../../layouts/DefaultLayout.astro';
 import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components';
 import { createClient } from '@libsql/client';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkHtml from 'remark-html';
 
+// Helper function to parse markdown content
+async function parseMarkdown(markdown) {
+  const file = await unified().use(remarkParse).use(remarkHtml).process(markdown);
+  return String(file);
+}
+
+// Function to get paths
 export async function getStaticPaths() {
-  // Initialize Turso client
+  // Initialize Turso client inside the function
   const turso = createClient({
     url: import.meta.env.TURSO_DATABASE_URL,
     authToken: import.meta.env.TURSO_AUTH_TOKEN,
   });
 
-  // Fetch all post IDs and titles to create paths for individual posts
-  const { rows } = await turso.execute('SELECT id, title FROM blog');
+  try {
+    // Fetch data for paths
+    const { rows } = await turso.execute('SELECT id, title FROM blog');
+    if (!rows || rows.length === 0) {
+      console.error("No data fetched from the database.");
+      return [];
+    }
 
-  // Generate paths based on title, using it as a URL slug
-  return rows.map((post) => {
-    return {
+    // Map data to paths format
+    return rows.map((post) => ({
       params: { post: post.title.replaceAll(' ', '-').toLowerCase() },
       props: { id: post.id },
-    };
-  });
+    }));
+  } catch (error) {
+    console.error("Error in getStaticPaths:", error);
+    return []; // Return empty array if there's an error
+  }
 }
 
+// Get `id` from `Astro.props`
 const { id } = Astro.props;
 
-// Fetch the full post data including image_url using the post ID
+// Initialize `turso` client again (outside `getStaticPaths`)
 const turso = createClient({
   url: import.meta.env.TURSO_DATABASE_URL,
   authToken: import.meta.env.TURSO_AUTH_TOKEN,
 });
-const { rows: [post] } = await turso.execute(
-  `SELECT title, description, date, blog, image_url FROM blog WHERE id = ?`,
-  [id]
-);
---- 
+
+let post;
+let contentHtml = "<p>No content available.</p>";
+
+try {
+  // Fetch the full post data
+  const { rows: [fetchedPost] } = await turso.execute(
+    `SELECT title, description, date, blog, content, image_url FROM blog WHERE id = ?`,
+    [id]
+  );
+  
+  if (!fetchedPost) {
+    console.error(`No post found with id: ${id}`);
+    throw new Error(`No post found with id: ${id}`);
+  }
+
+  post = fetchedPost;
+
+  // Parse Markdown content to HTML
+  contentHtml = post.content ? await parseMarkdown(post.content) : "<p>No content available.</p>";
+} catch (error) {
+  console.error("Error fetching post data:", error);
+}
+---
 
 <DefaultLayout title={post.title} description={post.description} url={post.title}>
   <div class="container">
@@ -44,6 +81,7 @@ const { rows: [post] } = await turso.execute(
         <BreadcrumbsItem currentPage={true} label={post.title} />
       </Breadcrumbs>
     </div>
+
     <!-- Hero Image Section -->
     {post.image_url && (
       <img src={post.image_url} alt={`Image for ${post.title}`} class="hero-image" />
@@ -56,9 +94,7 @@ const { rows: [post] } = await turso.execute(
     </div>
   </section>
   <section class="my-12">
-    <div class="container">
-      <p class="text-2xl">{post.blog}</p>
-    </div>
+    <div class="container markdown-content" set:html={contentHtml}></div>
   </section>
 </DefaultLayout>
 
@@ -69,4 +105,25 @@ const { rows: [post] } = await turso.execute(
     margin-bottom: 2rem;
     margin-top: 2rem;
   }
+
+  /* Add custom styling for Markdown content */
+  .markdown-content h2 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .markdown-content p {
+    line-height: 1.7;
+  }
+
+  .markdown-content ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+
+  .markdown-content a {
+    color: #007acc;
+    text-decoration: underline;
+  }
 </style>
+

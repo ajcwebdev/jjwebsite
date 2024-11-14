@@ -3,17 +3,17 @@ import DefaultLayout from '../../layouts/DefaultLayout.astro';
 import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components';
 import { getCollection } from 'astro:content';
 
+// Define `getStaticPaths` to generate paths for each blog post
 export async function getStaticPaths() {
-  // Get all posts from the 'blog' collection
   const blogPosts = await getCollection('blog');
 
-  // Generate paths based on each post's slug
   return blogPosts.map((post) => ({
     params: { post: post.slug },
     props: { post },
   }));
 }
 
+// Define post as a prop from the `getStaticPaths` function
 const { post } = Astro.props;
 
 // Helper function to format dates
@@ -28,7 +28,10 @@ function formatDate(dateStr) {
 }
 ---
 
-<DefaultLayout title={post.data.title} description={post.data.description} url={`/blog/${post.slug}`}
+<DefaultLayout
+  title={post.data.title}
+  description={post.data.description}
+  url={`/blog/${post.slug}`}
 >
   <div class="container">
     <div class="mt-12">
@@ -47,9 +50,11 @@ function formatDate(dateStr) {
         By {post.data.author} on {formatDate(post.data.pubDate)}
       </p>
       <img src={post.data.imgUrl} alt={post.data.title} class="post-image" />
-      <div class="content">
-        {post.body} <!-- Directly render markdown content -->
-      </div>
+    </div>
+  </section>
+  <section class="my-12">
+    <div class="container">
+      <p class="text-2xl">{post.body}</p>
     </div>
   </section>
 </DefaultLayout>
@@ -62,34 +67,7 @@ function formatDate(dateStr) {
   .post-image {
     max-width: 100%;
     height: auto;
-    margin: 1rem 0;
-    display: block;
-  }
-
-  /* Markdown styling */
-  .content h1, .content h2, .content h3 {
-    margin-top: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .content p {
     margin-bottom: 1rem;
-    line-height: 1.6;
-  }
-
-  .content img {
-    max-width: 100%;
-    height: auto;
-    margin: 1rem 0;
-  }
-
-  .content ul, .content ol {
-    padding-left: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .content a {
-    color: #1e90ff;
-    text-decoration: underline;
+    border-radius: 8px;
   }
 </style>

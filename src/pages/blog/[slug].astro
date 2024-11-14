@@ -1,0 +1,34 @@
+---
+import DefaultLayout from '../../layouts/DefaultLayout.astro';
+import { getCollection } from 'astro:content';
+import { z } from 'astro:content';
+
+export async function getStaticPaths() {
+  // Get all posts from the 'blog' collection
+  const blogPosts = await getCollection('blog');
+
+  // Generate paths based on each post's slug
+  return blogPosts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+---
+
+<DefaultLayout
+  title={post.data.title}
+  description={post.data.description}
+>
+  <article class="container my-12">
+    <h1 class="text-3xl font-bold mb-4">{post.data.title}</h1>
+    <p class="text-sm text-gray-600">
+      By {post.data.author} | Published on {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </p>
+    <img src={post.data.imgUrl} alt={post.data.title} class="my-4" />
+    <div class="content">
+      {post.body} <!-- This will render the markdown content -->
+    </div>
+  </article>
+</DefaultLayout>

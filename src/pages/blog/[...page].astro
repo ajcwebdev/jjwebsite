@@ -47,7 +47,8 @@ function formatDate(dateStr) {
               title={post.data.title}
               footer={`By ${post.data.author} on ${formatDate(post.data.pubDate)}`}
             >
-              {post.data.description}
+              <img src={post.data.imgUrl} alt={post.data.title} class="post-card-image" />
+              <p class="post-card-description">{post.data.description}</p>
             </Card>
           </li>
         ))}
@@ -80,5 +81,18 @@ function formatDate(dateStr) {
     @media (min-width: 950px) {
       grid-template-columns: repeat(3, 1fr);
     }
+  }
+
+  .post-card-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+  }
+
+  .post-card-description {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #666;
   }
 </style>

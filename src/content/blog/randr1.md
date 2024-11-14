@@ -2,13 +2,13 @@
 layout: ../layouts/MarkdownLayout.astro
 title: Recap & Rambles 1
 author: Jenn Junod
-tags: 
+description: Jenn rambling about shit
 pubDate: 10/21/2024
-imgUrl: 
-draft:
-embed: 
+imgUrl: https://a.storyblok.com/f/313345/4096x2731/d3b88f66d6/nuxt-nation-2023.jpeg
 ---
+
 # Recap and rambles of last week #1
+
 I have the urge to overthink this blog to prevent myself from posting it. My thoughts start with, what do I name such a blog? It’s not entirely just Teach Jenn Tech, nor Shit2TalkAbout. I want to write about lessons learned last week. Start taking the lessons I’ve learned and share my gratitude with all of the beautiful humans of the world. 
 
 ## Lesson 1: Starting something is the scariest part of the process. 

@@ -1,78 +1,22 @@
 ---
-import DefaultLayout from '../../layouts/DefaultLayout.astro';
-import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components';
-import { createClient } from '@libsql/client';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkHtml from 'remark-html';
+import DefaultLayout from '../../layouts/DefaultLayout.astro'
+import { Breadcrumbs, BreadcrumbsItem } from 'accessible-astro-components'
 
-// Helper function to parse markdown content
-async function parseMarkdown(markdown) {
-  const file = await unified().use(remarkParse).use(remarkHtml).process(markdown);
-  return String(file);
-}
-
-// Function to get paths
 export async function getStaticPaths() {
-  // Initialize Turso client inside the function
-  const turso = createClient({
-    url: import.meta.env.TURSO_DATABASE_URL,
-    authToken: import.meta.env.TURSO_AUTH_TOKEN,
-  });
+  const data = await fetch('https://jsonplaceholder.typicode.com/posts').then((response) => response.json())
 
-  try {
-    // Fetch data for paths
-    const { rows } = await turso.execute('SELECT id, title FROM blog');
-    if (!rows || rows.length === 0) {
-      console.error("No data fetched from the database.");
-      return [];
-    }
-
-    // Map data to paths format
-    return rows.map((post) => ({
+  return data.map((post) => {
+    return {
       params: { post: post.title.replaceAll(' ', '-').toLowerCase() },
-      props: { id: post.id },
-    }));
-  } catch (error) {
-    console.error("Error in getStaticPaths:", error);
-    return []; // Return empty array if there's an error
-  }
+      props: { post },
+    }
+  })
 }
 
-// Get `id` from `Astro.props`
-const { id } = Astro.props;
-
-// Initialize `turso` client again (outside `getStaticPaths`)
-const turso = createClient({
-  url: import.meta.env.TURSO_DATABASE_URL,
-  authToken: import.meta.env.TURSO_AUTH_TOKEN,
-});
-
-let post;
-let contentHtml = "<p>No content available.</p>";
-
-try {
-  // Fetch the full post data
-  const { rows: [fetchedPost] } = await turso.execute(
-    `SELECT title, description, date, blog, content, image_url FROM blog WHERE id = ?`,
-    [id]
-  );
-  
-  if (!fetchedPost) {
-    console.error(`No post found with id: ${id}`);
-    throw new Error(`No post found with id: ${id}`);
-  }
-
-  post = fetchedPost;
-
-  // Parse Markdown content to HTML
-  contentHtml = post.content ? await parseMarkdown(post.content) : "<p>No content available.</p>";
-} catch (error) {
-  console.error("Error fetching post data:", error);
-}
+const { post } = Astro.props
 ---
 
-<DefaultLayout title={post.title} description={post.description} url={post.title}>
+<DefaultLayout title={post.title} description={post.body} url={post.title}>
   <div class="container">
     <div class="mt-12">
       <Breadcrumbs>
@@ -81,49 +25,33 @@ try {
         <BreadcrumbsItem currentPage={true} label={post.title} />
       </Breadcrumbs>
     </div>
-
-    <!-- Hero Image Section -->
-    {post.image_url && (
-      <img src={post.image_url} alt={`Image for ${post.title}`} class="hero-image" />
-    )}
   </div>
   <section class="my-12">
     <div class="container">
-      <h1>{post.title}</h1>
-      <p><strong>Date:</strong> {post.date}</p>
+      <h1>{post.title}</h1><br />
+      <p>By userId: {post.userId}</p>
     </div>
   </section>
   <section class="my-12">
-    <div class="container markdown-content" set:html={contentHtml}></div>
+    <div class="container">
+      <p class="text-2xl">{post.body}</p>
+    </div>
   </section>
 </DefaultLayout>
 
 <style lang="scss">
-  .hero-image {
-    width: 100%;
-    height: auto;
-    margin-bottom: 2rem;
-    margin-top: 2rem;
-  }
+  ul {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 4rem;
 
-  /* Add custom styling for Markdown content */
-  .markdown-content h2 {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
-  }
+    @media (min-width: 550px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: 2rem;
+    }
 
-  .markdown-content p {
-    line-height: 1.7;
-  }
-
-  .markdown-content ul {
-    list-style: disc;
-    padding-left: 1.5rem;
-  }
-
-  .markdown-content a {
-    color: #007acc;
-    text-decoration: underline;
+    @media (min-width: 950px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>
-

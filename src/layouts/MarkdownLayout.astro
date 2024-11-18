@@ -11,3 +11,35 @@ const { frontmatter } = Astro.props
     </div>
   </div>
 </DefaultLayout>
+
+<!-- In your [post].astro file, add this style section or modify your existing one -->
+<style is:global>
+  .container {
+    /* Increase base font size */
+    font-size: 1.125rem; /* or 18px */
+  }
+
+  /* Style markdown content */
+  .container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .container h2 {
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Add spacing between paragraphs */
+  .container p {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  /* If you're using the Content component, you might need to target it specifically */
+  .container :global(.prose p) {
+    margin-bottom: 1.5rem;
+    font-size: 1.125rem;
+  }
+</style>

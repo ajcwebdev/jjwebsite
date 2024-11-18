@@ -1,3 +1,4 @@
+// src/content/config.ts
 import { z, defineCollection } from 'astro:content';
 
 const blogCollection = defineCollection({
@@ -5,13 +6,14 @@ const blogCollection = defineCollection({
     z.object({
       title: z.string(),
       author: z.string(),
-      tags: z.array(z.string()),
       description: z.string(),
       pubDate: z.string().transform((str) => new Date(str)),
-      imgUrl: image(),
-      draft: z.boolean().optional().default(false),
-      embed: z.string().optional(),
-      body: z.string(), // Ensure `body` is included if necessary
+      // Change this to accept either an image() or a string URL
+      imgUrl: z.union([
+        image(),
+        z.string().url()
+      ]),
+      // ... other fields
     }),
 });
 

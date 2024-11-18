@@ -15,6 +15,8 @@ export async function getStaticPaths() {
 
 // Define post as a prop from the `getStaticPaths` function
 const { post } = Astro.props;
+const { Content } = await post.render();
+
 
 // Helper function to format dates
 function formatDate(dateStr) {
@@ -60,15 +62,34 @@ function formatDate(dateStr) {
   </section>
 </DefaultLayout>
 
-<style lang="scss">
-  .content {
-    margin-top: 2rem;
+<!-- In your [post].astro file, add this style section or modify your existing one -->
+<style is:global>
+  .container {
+    /* Increase base font size */
+    font-size: 1.125rem; /* or 18px */
   }
 
-  .post-image {
-    max-width: 100%;
-    height: auto;
+  /* Style markdown content */
+  .container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .container h2 {
+    font-size: 2rem;
+    margin-top: 2rem;
     margin-bottom: 1rem;
-    border-radius: 8px;
+  }
+
+  /* Add spacing between paragraphs */
+  .container p {
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  /* If you're using the Content component, you might need to target it specifically */
+  .container :global(.prose p) {
+    margin-bottom: 1.5rem;
+    font-size: 1.125rem;
   }
 </style>

@@ -33,17 +33,12 @@
     "tailwindcss": "^3.2.7"
   },
   "dependencies": {
-    "@astrojs/react": "^3.6.2",
-    "@astrojs/telemetry": "^3.1.0",
     "@iconify-json/dashicons": "^1.2.0",
     "@iconify-json/icon-park-solid": "^1.2.1",
     "@libsql/client": "^0.14.0",
     "lucide-react": "^0.460.0",
     "markdown-it": "^14.1.0",
     "marked": "^15.0.0",
-    "node": "^18.20.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "remark-html": "^16.0.1",
     "remark-parse": "^11.0.0",
     "remarkable": "^2.0.1",

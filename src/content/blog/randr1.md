@@ -4,7 +4,7 @@ title: Recap & Rambles 1
 author: Jenn Junod
 description: Jenn rambling about shit
 pubDate: 10/21/2024
-imgUrl: https://a.storyblok.com/f/313345/4096x2731/d3b88f66d6/nuxt-nation-2023.jpeg
+imgUrl: https://res.cloudinary.com/dczxhaero/image/upload/v1731366312/Recap_Rambles_1_2024.10.27_mhxqbs.png
 ---
 
 # Recap and rambles of last week #1

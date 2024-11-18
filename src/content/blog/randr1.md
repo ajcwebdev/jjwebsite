@@ -1,5 +1,4 @@
 ---
-layout: ../layouts/MarkdownLayout.astro
 title: Recap & Rambles 1
 author: Jenn Junod
 description: Jenn rambling about shit
@@ -14,6 +13,7 @@ I have the urge to overthink this blog to prevent myself from posting it. My tho
 ## Lesson 1: Starting something is the scariest part of the process. 
 
 As I said before, I have a knack for overthinking the process to prevent myself from starting. This week's overthink was the fact that I’m unemployed and should have a shit ton of time on my hands, so therefore creating videos, blogs, shorts, and livestreaming will be EASY on top of looking for a job, interviewing, and networking. Oh wait, there’s also taking my father-in-law to all of his doctor's appointments and running errands. Last week, I didn’t get a chance to catch up on any video games until today, SUNDAY! 😫
+
 
 If I put enough pressure on myself with having too much to do and not enough time to be creative or tell myself I’m not smart enough to think of witty videos to be an overnight success, then there’s no fear of what other will think. 
 

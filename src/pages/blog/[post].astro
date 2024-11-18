@@ -15,6 +15,7 @@ export async function getStaticPaths() {
 
 // Define post as a prop from the `getStaticPaths` function
 const { post } = Astro.props;
+const { Content } = await post.render();
 
 // Helper function to format dates
 function formatDate(dateStr) {
@@ -54,7 +55,8 @@ function formatDate(dateStr) {
   </section>
   <section class="my-12">
     <div class="container">
-      <p class="text-2xl">{post.body}</p>
+<Content/>
+      <!-- <p class="text-2xl">{post.body}</p> -->
     </div>
   </section>
 </DefaultLayout>
